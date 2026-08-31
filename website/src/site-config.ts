@@ -1,1 +1,1 @@
-export const siteUrl = 'https://digital-product-consultant.evans-jm3.chatgpt.site';
+export const siteUrl = 'https://igoodthings.qiaokiai.com/skills/digital-product-consultant/site';

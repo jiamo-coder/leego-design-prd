@@ -1,0 +1,5 @@
+.DS_Store
+deploy/aliyun/.deploy.local.sh
+deploy/aliyun/.git-release-approval.local.json
+deploy/aliyun/release/*.tgz
+deploy/aliyun/release/*.version-plan.json

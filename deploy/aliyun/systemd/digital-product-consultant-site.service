@@ -1,0 +1,22 @@
+[Unit]
+Description=Goodthings digital product consultant website
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/service/digital-product-consultant-site/current
+Environment=NODE_ENV=production
+EnvironmentFile=/etc/digital-product-consultant-site/digital-product-consultant-site.env
+ExecStart=/usr/bin/env bash /service/digital-product-consultant-site/current/deploy/aliyun/scripts/start-prod.sh
+Restart=always
+RestartSec=5
+TimeoutStartSec=60
+TimeoutStopSec=30
+KillSignal=SIGTERM
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

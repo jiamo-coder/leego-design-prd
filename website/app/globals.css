@@ -588,7 +588,9 @@ button { color: inherit; }
 
 .site-footer strong { font-size: 17px; }
 .site-footer span, .site-footer small { color: #aab2bf; font-size: 12px; line-height: 18px; }
-.site-footer small { grid-area: 1 / 2 / 3; }
+.site-footer .footer-meta { grid-area: 1 / 2 / 3; display: grid; justify-items: end; gap: 4px; }
+.site-footer small { color: #aab2bf; }
+.site-footer .footer-meta a { color: #d8d2f1; font-size: 12px; line-height: 18px; text-decoration: underline; text-underline-offset: 3px; }
 
 .not-found {
   display: grid;
@@ -741,7 +743,7 @@ button { color: inherit; }
   .evidence-grid { grid-template-columns: 1fr; }
   .trust-grid li { grid-template-columns: 1fr; gap: 5px; }
   .site-footer .site-container { grid-template-columns: 1fr; }
-  .site-footer small { grid-area: auto; }
+  .site-footer .footer-meta { grid-area: auto; justify-items: start; }
 }
 
 @media (max-width: 390px) {

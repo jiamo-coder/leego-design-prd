@@ -5,5 +5,5 @@ export const profileStats = {
   pending: 15,
   conflicting: 0,
   retired: 0,
-  verifiedAt: '2026-08-30',
+  verifiedAt: '2026-08-31',
 } as const;

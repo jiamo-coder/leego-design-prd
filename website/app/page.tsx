@@ -1,5 +1,6 @@
 import { SiteHeader } from './site-header';
 import { capabilityProfile } from '../src/content/capability-profile';
+import releaseVersion from '../release-version.json';
 
 const sourceLabels = {
   SKILL: '当前 Skill',
@@ -291,7 +292,12 @@ export default function Home() {
         <div className="site-container">
           <strong>{profile.identity.name}</strong>
           <span>持续学习业务的 AI 产品经理</span>
-          <small>公开内容最后核验：{profile.verifiedAt}</small>
+          <div className="footer-meta">
+            <small>公开内容最后核验：{profile.verifiedAt}</small>
+            <a href="https://igoodthings.qiaokiai.com/releases">
+              版本 {process.env.NEXT_PUBLIC_RELEASE_VERSION ?? releaseVersion.displayVersion} · Goodthings 版本总览
+            </a>
+          </div>
         </div>
       </footer>
     </>

@@ -10,16 +10,17 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title,
   description,
-  alternates: { canonical: '/' },
-  robots: { index: true, follow: true },
+  alternates: { canonical: siteUrl },
+  robots: { index: false, follow: true },
   openGraph: {
     type: 'website',
     locale: 'zh_CN',
+    url: siteUrl,
     title,
     description,
     images: [
       {
-        url: '/og.png',
+        url: '/skills/digital-product-consultant/site/og.png',
         width: 1200,
         height: 630,
         alt: '从业务问题到产品判断、PRD、Codex 实施、证据与持续学习的产品闭环',
@@ -30,7 +31,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title,
     description,
-    images: ['/og.png'],
+    images: ['/skills/digital-product-consultant/site/og.png'],
   },
 };
 
