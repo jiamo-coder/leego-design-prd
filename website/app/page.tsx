@@ -8,6 +8,10 @@ const sourceLabels = {
   'PRD-SPEC': '可实施 PRD 规范',
 } as const;
 
+const releaseDisplayVersion =
+  process.env.NEXT_PUBLIC_RELEASE_VERSION ?? releaseVersion.displayVersion;
+const siteBuild = releaseDisplayVersion.match(/\((\d+)\)$/)?.[1] ?? releaseVersion.buildCount;
+
 function getSourceLabel(source: string) {
   return source in sourceLabels
     ? sourceLabels[source as keyof typeof sourceLabels]
@@ -53,7 +57,7 @@ export default function Home() {
               <dl className="hero-meta" aria-label="能力档案状态">
                 <div>
                   <dt>公开身份</dt>
-                  <dd>产品数字化顾问</dd>
+                  <dd>Leego Design PRDVI</dd>
                 </div>
                 <div>
                   <dt>专业重点</dt>
@@ -282,7 +286,7 @@ export default function Home() {
               target="_blank"
               rel="noreferrer"
             >
-              GitHub：jiamo-coder/skills/digital-product-consultant
+              GitHub：jiamo-coder/skills/leego-design-prd
             </a>
           </div>
         </section>
@@ -295,7 +299,8 @@ export default function Home() {
           <div className="footer-meta">
             <small>公开内容最后核验：{profile.verifiedAt}</small>
             <a href="https://igoodthings.qiaokiai.com/releases">
-              版本 {process.env.NEXT_PUBLIC_RELEASE_VERSION ?? releaseVersion.displayVersion} · Goodthings 版本总览
+              Skill v{profile.skillVersion} · L{profile.learningRevision} · Build{' '}
+              {siteBuild} · Goodthings 版本总览
             </a>
           </div>
         </div>

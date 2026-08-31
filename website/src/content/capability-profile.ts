@@ -39,6 +39,8 @@ export interface EvidenceItem {
 
 export interface CapabilityProfile {
   identity: { name: string; positioning: string; proposition: string };
+  skillVersion: string;
+  learningRevision: number;
   principles: PublicClaim[];
   capabilities: Capability[];
   workflow: WorkflowStep[];
@@ -55,11 +57,13 @@ const learning = '持续学习中';
 
 export const capabilityProfile: CapabilityProfile = {
   identity: {
-    name: '产品数字化顾问',
+    name: 'Leego Design PRDVI',
     positioning: '成长型 AI 产品经理',
     proposition:
       '持续理解企业业务，诊断连锁数字化与 AI 化问题，把需求、规则、权限、数据、异常和验收组织成 Codex 可以实施的产品基线。',
   },
+  skillVersion: profileStats.skillVersion,
+  learningRevision: profileStats.learningRevision,
   principles: [
     {
       id: 'principle-problem-first',
@@ -312,9 +316,9 @@ export const capabilityProfile: CapabilityProfile = {
     { id: 'loop-learning', label: '沉淀学习' },
   ],
   links: {
-    publicSkill: 'https://github.com/jiamo-coder/skills/tree/main/digital-product-consultant',
+    publicSkill: 'https://github.com/jiamo-coder/skills/tree/main/leego-design-prd',
     learningLedger:
-      'https://github.com/jiamo-coder/skills/blob/main/digital-product-consultant/references/learning-ledger.md',
+      'https://github.com/jiamo-coder/skills/blob/main/leego-design-prd/references/learning-ledger.md',
   },
   verifiedAt: profileStats.verifiedAt,
 };

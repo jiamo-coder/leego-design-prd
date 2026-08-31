@@ -100,7 +100,19 @@ function recordRelease(registryPath, args) {
     history: mergeHistory([release], previous?.history),
   };
   registry.services[args['service-id']] = service;
+  if (args['retire-service-id'] && args['retire-service-id'] !== args['service-id']) {
+    delete registry.services[args['retire-service-id']];
+  }
   registry.updatedAt = releasedAt;
+  writeAtomic(registryPath, registry);
+}
+
+function retireService(registryPath, args) {
+  if (!args['service-id']) fail('retire 缺少 --service-id');
+  const registry = readRegistry(registryPath);
+  if (!(args['service-id'] in registry.services)) return;
+  delete registry.services[args['service-id']];
+  registry.updatedAt = new Date().toISOString();
   writeAtomic(registryPath, registry);
 }
 
@@ -114,6 +126,8 @@ if (command === 'seed') {
   seedRegistry(registryPath, path.resolve(args.seed));
 } else if (command === 'record') {
   recordRelease(registryPath, args);
+} else if (command === 'retire') {
+  retireService(registryPath, args);
 } else {
-  fail('用法: manage_service_release_registry.mjs <seed|record> --registry <file> ...');
+  fail('用法: manage_service_release_registry.mjs <seed|record|retire> --registry <file> ...');
 }

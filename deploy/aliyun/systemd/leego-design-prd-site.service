@@ -1,0 +1,22 @@
+[Unit]
+Description=Leego Design PRDVI website
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/service/leego-design-prd-site/current
+Environment=NODE_ENV=production
+EnvironmentFile=/etc/leego-design-prd-site/leego-design-prd-site.env
+ExecStart=/usr/bin/env bash /service/leego-design-prd-site/current/deploy/aliyun/scripts/start-prod.sh
+Restart=always
+RestartSec=5
+TimeoutStartSec=60
+TimeoutStopSec=30
+KillSignal=SIGTERM
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

@@ -1,6 +1,6 @@
 {
-  "name": "digital-product-consultant-website",
-  "version": "0.2.0",
+  "name": "leego-design-prd-website",
+  "version": "2.0.0",
   "private": true,
   "engines": {
     "node": ">=22.13.0"
@@ -13,7 +13,8 @@
     "typecheck": "tsc --noEmit",
     "content:sync": "node scripts/sync-skill-profile.mjs",
     "content:check": "node scripts/sync-skill-profile.mjs --check",
-    "check": "npm run content:check && npm run typecheck && npm run lint && npm run build"
+    "version:check": "node ../scripts/manage_skill_version.mjs check",
+    "check": "npm run version:check && npm run content:check && npm run typecheck && npm run lint && npm run build"
   },
   "dependencies": {
     "next": "^16.3.3",

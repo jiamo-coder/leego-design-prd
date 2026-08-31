@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(scriptDir, '../../..');
+const skillPath = path.join(repoRoot, 'SKILL.md');
 const packageJsonPath = path.join(repoRoot, 'website', 'package.json');
 const packageLockPath = path.join(repoRoot, 'website', 'package-lock.json');
 const versionFilePath = path.join(repoRoot, 'website', 'release-version.json');
@@ -25,7 +26,9 @@ function usage() {
   console.log(`Usage:
   node deploy/aliyun/scripts/manage_release_version.mjs plan --release-type-zh <大改版|新功能|修复优化> --output <file>
   node deploy/aliyun/scripts/manage_release_version.mjs apply --plan-file <file> [--format text|json|env]
-  node deploy/aliyun/scripts/manage_release_version.mjs show [--format text|json|env]`);
+  node deploy/aliyun/scripts/manage_release_version.mjs show [--format text|json|env]
+
+发布只增加 Build；Skill SemVer 由 scripts/manage_skill_version.mjs 管理。`);
 }
 
 function parseArgs(argv) {
@@ -63,18 +66,26 @@ function formatSemver(value) {
   return `${value.major}.${value.minor}.${value.patch}`;
 }
 
-function bumpSemver(value, type) {
-  if (type === 'major') return { major: value.major + 1, minor: 0, patch: 0 };
-  if (type === 'minor') return { major: value.major, minor: value.minor + 1, patch: 0 };
-  return { major: value.major, minor: value.minor, patch: value.patch + 1 };
+function readSkillVersion() {
+  const content = fs.readFileSync(skillPath, 'utf8');
+  const frontmatter = content.match(/^---\n([\s\S]*?)\n---/)?.[1];
+  const version = frontmatter?.match(
+    /^metadata:\s*\n(?: {2}[^\n]*\n)*? {2}version:\s*["']?(\d+\.\d+\.\d+)["']?\s*$/m,
+  )?.[1];
+  if (!version) fail('SKILL.md metadata.version 缺失或不是三段式 SemVer');
+  return version;
 }
 
 function currentState() {
   if (!fs.existsSync(packageJsonPath)) fail(`未找到 package.json: ${packageJsonPath}`);
   const packageJson = readJson(packageJsonPath);
   const versionMeta = fs.existsSync(versionFilePath) ? readJson(versionFilePath) : {};
-  const semver = parseSemver(versionMeta.semver) ?? parseSemver(packageJson.version);
-  if (!semver) fail('package.json 或 release-version.json 中没有有效的三段式版本号');
+  const skillVersion = readSkillVersion();
+  const semver = parseSemver(skillVersion);
+  if (!semver) fail('SKILL.md 中没有有效的三段式版本号');
+  if (packageJson.version !== skillVersion || versionMeta.semver !== skillVersion) {
+    fail(`版本不一致：Skill=${skillVersion}，package=${packageJson.version}，release=${versionMeta.semver}`);
+  }
   const buildCount = Number.isInteger(versionMeta.buildCount) && versionMeta.buildCount >= 0
     ? versionMeta.buildCount
     : 0;
@@ -85,11 +96,11 @@ function makePlan(releaseTypeZh) {
   const releaseType = releaseTypes.get(releaseTypeZh);
   if (!releaseType) fail(`发布类型必须是：大改版 / 新功能 / 修复优化；收到：${releaseTypeZh}`);
   const state = currentState();
-  const nextSemver = formatSemver(bumpSemver(parseSemver(state.semver), releaseType));
+  const nextSemver = state.semver;
   const nextBuildCount = state.buildCount + 1;
   return {
     schemaVersion: 1,
-    projectName: 'digital-product-consultant-site',
+    projectName: 'leego-design-prd-site',
     releaseTypeZh,
     releaseType,
     baseSemver: state.semver,

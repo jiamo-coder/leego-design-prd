@@ -3,3 +3,5 @@ deploy/aliyun/.deploy.local.sh
 deploy/aliyun/.git-release-approval.local.json
 deploy/aliyun/release/*.tgz
 deploy/aliyun/release/*.version-plan.json
+deploy/aliyun/release/*.commit-message.txt
+deploy/aliyun/release/*.commit-paths.txt

@@ -33,9 +33,9 @@ export function SiteHeader({ publicSkillUrl }: { publicSkillUrl: string }) {
   return (
     <header className="site-header">
       <div className="site-container header-inner">
-        <a className="brand" href="#main-content" aria-label="产品数字化顾问首页">
+        <a className="brand" href="#main-content" aria-label="Leego Design PRDVI 首页">
           <span aria-hidden="true">品</span>
-          <strong>产品数字化顾问</strong>
+          <strong>Leego Design PRDVI</strong>
         </a>
 
         <button

@@ -1,1 +1,1 @@
-export const siteUrl = 'https://igoodthings.qiaokiai.com/skills/digital-product-consultant/site';
+export const siteUrl = 'https://igoodthings.qiaokiai.com/skills/leego-design-prd/site';

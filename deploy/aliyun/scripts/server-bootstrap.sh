@@ -2,9 +2,9 @@
 
 set -euo pipefail
 
-PROJECT_ROOT="${1:-/service/digital-product-consultant-site}"
+PROJECT_ROOT="${1:-/service/leego-design-prd-site}"
 RUN_USER="${2:-root}"
-ENV_DIR="${3:-/etc/digital-product-consultant-site}"
+ENV_DIR="${3:-/etc/leego-design-prd-site}"
 
 sudo mkdir -p \
   "${PROJECT_ROOT}/releases" \
@@ -22,4 +22,4 @@ sudo touch \
 sudo chown -R "${RUN_USER}:${RUN_USER}" "${PROJECT_ROOT}"
 sudo chmod 750 "${ENV_DIR}"
 
-echo "digital-product-consultant-site 服务器目录已初始化: ${PROJECT_ROOT}"
+echo "leego-design-prd-site 服务器目录已初始化: ${PROJECT_ROOT}"

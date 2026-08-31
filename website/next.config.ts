@@ -1,7 +1,7 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  basePath: '/skills/digital-product-consultant/site',
+  basePath: '/skills/leego-design-prd/site',
 };
 
 export default nextConfig;

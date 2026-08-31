@@ -6,7 +6,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(cd "${SCRIPT_DIR}/../../.." && pwd)"
 DEPLOY_DIR="${ROOT_DIR}/deploy/aliyun"
 RELEASE_DIR="${DEPLOY_DIR}/release"
-PROJECT_NAME="digital-product-consultant-site"
+PROJECT_NAME="leego-design-prd-site"
 DEPLOY_ENV_FILE="${PO_DEPLOY_ENV_FILE:-${DEPLOY_DIR}/.deploy.local.sh}"
 STAMP="${1:-}"
 TMP_DIR="$(mktemp -d)"
@@ -60,8 +60,8 @@ validate_artifact() {
     "dist/client/vinext-client-entry-manifest.json"
     "web/vinext-client-entry-manifest.json"
     "deploy/aliyun/env/api.env.example"
-    "deploy/aliyun/nginx/digital-product-consultant-site.conf"
-    "deploy/aliyun/systemd/digital-product-consultant-site.service"
+    "deploy/aliyun/nginx/leego-design-prd-site.conf"
+    "deploy/aliyun/systemd/leego-design-prd-site.service"
     "deploy/aliyun/scripts/start-prod.sh"
     "deploy/aliyun/scripts/server-bootstrap.sh"
     "deploy/aliyun/scripts/manage_service_release_registry.mjs"
@@ -135,21 +135,23 @@ source "${DEPLOY_ENV_FILE}"
 
 PO_DEPLOY_PORT="${PO_DEPLOY_PORT:-22}"
 PO_SSH_PASSWORD="${PO_SSH_PASSWORD:-}"
-PO_REMOTE_ROOT="${PO_REMOTE_ROOT:-/service/digital-product-consultant-site}"
+PO_REMOTE_ROOT="${PO_REMOTE_ROOT:-/service/leego-design-prd-site}"
 PO_REMOTE_CURRENT_DIR="${PO_REMOTE_CURRENT_DIR:-${PO_REMOTE_ROOT}/current}"
 PO_REMOTE_RELEASES_DIR="${PO_REMOTE_RELEASES_DIR:-${PO_REMOTE_ROOT}/releases}"
 PO_REMOTE_SHARED_DIR="${PO_REMOTE_SHARED_DIR:-${PO_REMOTE_ROOT}/shared}"
 PO_REMOTE_DATA_DIR="${PO_REMOTE_DATA_DIR:-${PO_REMOTE_ROOT}/data}"
 PO_REMOTE_UPLOADS_DIR="${PO_REMOTE_UPLOADS_DIR:-${PO_REMOTE_ROOT}/uploads}"
 PO_REMOTE_LOG_DIR="${PO_REMOTE_LOG_DIR:-${PO_REMOTE_ROOT}/logs}"
-PO_REMOTE_ENV_DIR="${PO_REMOTE_ENV_DIR:-/etc/digital-product-consultant-site}"
-PO_REMOTE_ENV_FILE="${PO_REMOTE_ENV_FILE:-${PO_REMOTE_ENV_DIR}/digital-product-consultant-site.env}"
-PO_REMOTE_SERVICE_NAME="${PO_REMOTE_SERVICE_NAME:-digital-product-consultant-site.service}"
-PO_REMOTE_NGINX_CONF="${PO_REMOTE_NGINX_CONF:-/etc/nginx/conf.d/digital-product-consultant-site.conf}"
+PO_REMOTE_ENV_DIR="${PO_REMOTE_ENV_DIR:-/etc/leego-design-prd-site}"
+PO_REMOTE_ENV_FILE="${PO_REMOTE_ENV_FILE:-${PO_REMOTE_ENV_DIR}/leego-design-prd-site.env}"
+PO_REMOTE_SERVICE_NAME="${PO_REMOTE_SERVICE_NAME:-leego-design-prd-site.service}"
+PO_REMOTE_NGINX_CONF="${PO_REMOTE_NGINX_CONF:-/etc/nginx/conf.d/leego-design-prd-site.conf}"
+PO_LEGACY_SERVICE_NAME="${PO_LEGACY_SERVICE_NAME:-digital-product-consultant-site.service}"
+PO_LEGACY_NGINX_CONF="${PO_LEGACY_NGINX_CONF:-/etc/nginx/conf.d/digital-product-consultant-site.conf}"
 PO_REMOTE_WEB_DIR="${PO_REMOTE_WEB_DIR:-${PO_REMOTE_ROOT}/web}"
 PO_REMOTE_RUN_USER="${PO_REMOTE_RUN_USER:-${PO_DEPLOY_USER:-root}}"
 PO_REMOTE_RELEASE_KEEP_COUNT="${PO_REMOTE_RELEASE_KEEP_COUNT:-2}"
-PO_HEALTHCHECK_URL="${PO_HEALTHCHECK_URL:-http://127.0.0.1:8015/skills/digital-product-consultant/site/}"
+PO_HEALTHCHECK_URL="${PO_HEALTHCHECK_URL:-http://127.0.0.1:8015/skills/leego-design-prd/site/}"
 PO_RELEASE_REGISTRY_PATH="${PO_RELEASE_REGISTRY_PATH:-/service/igoodthings/shared/service-releases.json}"
 
 require_env PO_DEPLOY_HOST
@@ -184,11 +186,11 @@ node "${SCRIPT_DIR}/manage_git_release_commit.mjs" verify \
   --git-tag "${RELEASE_GIT_TAG}"
 
 RELEASE_NAME="$(basename "${ARTIFACT}" .tgz)"
-[[ "${RELEASE_NAME}" =~ ^digital-product-consultant-site-[0-9]{8}-[0-9]{6}$ ]] || fail "发布包名称不安全: ${RELEASE_NAME}"
+[[ "${RELEASE_NAME}" =~ ^leego-design-prd-site-[0-9]{8}-[0-9]{6}$ ]] || fail "发布包名称不安全: ${RELEASE_NAME}"
 REMOTE_ARTIFACT="/tmp/$(basename "${ARTIFACT}")"
-REMOTE_ENV_EXAMPLE="/tmp/digital-product-consultant-site.env.example"
-REMOTE_SERVICE_FILE="/tmp/digital-product-consultant-site.service"
-REMOTE_NGINX_FILE="/tmp/digital-product-consultant-site.conf"
+REMOTE_ENV_EXAMPLE="/tmp/leego-design-prd-site.env.example"
+REMOTE_SERVICE_FILE="/tmp/leego-design-prd-site.service"
+REMOTE_NGINX_FILE="/tmp/leego-design-prd-site.conf"
 REMOTE_SCRIPT_FILE="/tmp/${RELEASE_NAME}-deploy.sh"
 LOCAL_REMOTE_SCRIPT="${TMP_DIR}/remote-deploy.sh"
 
@@ -206,6 +208,8 @@ LOCAL_REMOTE_SCRIPT="${TMP_DIR}/remote-deploy.sh"
   shell_assignment REMOTE_ENV_FILE "${PO_REMOTE_ENV_FILE}"
   shell_assignment REMOTE_SERVICE_NAME "${PO_REMOTE_SERVICE_NAME}"
   shell_assignment REMOTE_NGINX_CONF "${PO_REMOTE_NGINX_CONF}"
+  shell_assignment LEGACY_SERVICE_NAME "${PO_LEGACY_SERVICE_NAME}"
+  shell_assignment LEGACY_NGINX_CONF "${PO_LEGACY_NGINX_CONF}"
   shell_assignment REMOTE_WEB_DIR "${PO_REMOTE_WEB_DIR}"
   shell_assignment REMOTE_RUN_USER "${PO_REMOTE_RUN_USER}"
   shell_assignment REMOTE_RELEASE_KEEP_COUNT "${PO_REMOTE_RELEASE_KEEP_COUNT}"
@@ -233,17 +237,23 @@ require_cmd tar
 
 PREVIOUS_CURRENT="$(readlink -f "${REMOTE_CURRENT_DIR}" 2>/dev/null || true)"
 SWITCHED=0
+LEGACY_WAS_ACTIVE=0
 
 rollback() {
   local exit_code=$?
   if [[ "${SWITCHED}" -eq 1 ]]; then
+    sudo systemctl stop "${REMOTE_SERVICE_NAME}" || true
     if [[ -n "${PREVIOUS_CURRENT}" && -d "${PREVIOUS_CURRENT}" ]]; then
       sudo ln -sfn "${PREVIOUS_CURRENT}" "${REMOTE_CURRENT_DIR}"
-      sudo systemctl restart "${REMOTE_SERVICE_NAME}" || true
+      if [[ "${LEGACY_WAS_ACTIVE}" -eq 0 ]]; then
+        sudo systemctl restart "${REMOTE_SERVICE_NAME}" || true
+      fi
     else
       sudo rm -f "${REMOTE_CURRENT_DIR}"
-      sudo systemctl stop "${REMOTE_SERVICE_NAME}" || true
     fi
+  fi
+  if [[ "${LEGACY_WAS_ACTIVE}" -eq 1 ]]; then
+    sudo systemctl restart "${LEGACY_SERVICE_NAME}" || true
   fi
   echo "部署失败，已尝试恢复上一个 current" >&2
   exit "${exit_code}"
@@ -274,6 +284,10 @@ sudo install -m 644 "${REMOTE_NGINX_FILE}" "${REMOTE_NGINX_CONF}"
 sudo nginx -t
 sudo systemctl daemon-reload
 sudo systemctl enable "${REMOTE_SERVICE_NAME}" >/dev/null
+if sudo systemctl is-active --quiet "${LEGACY_SERVICE_NAME}"; then
+  LEGACY_WAS_ACTIVE=1
+  sudo systemctl stop "${LEGACY_SERVICE_NAME}"
+fi
 sudo ln -sfn "${REMOTE_RELEASE_DIR}" "${REMOTE_CURRENT_DIR}"
 SWITCHED=1
 sudo systemctl restart "${REMOTE_SERVICE_NAME}"
@@ -313,11 +327,17 @@ if [[ ${#OLD_RELEASES[@]} -gt 0 ]]; then
   sudo rm -rf -- "${OLD_RELEASES[@]}"
 fi
 
+sudo systemctl disable "${LEGACY_SERVICE_NAME}" >/dev/null 2>&1 || true
+sudo rm -f "${LEGACY_NGINX_CONF}"
+sudo nginx -t
+sudo systemctl reload nginx
+
 node "${REMOTE_CURRENT_DIR}/deploy/aliyun/scripts/manage_service_release_registry.mjs" record \
   --registry "${RELEASE_REGISTRY_PATH}" \
-  --service-id digital-product-consultant \
-  --name "零售数字化与 AI 产品顾问" \
-  --canonical-url "https://igoodthings.qiaokiai.com/skills/digital-product-consultant/site/" \
+  --service-id leego-design-prd \
+  --retire-service-id digital-product-consultant \
+  --name "Leego Design PRDVI" \
+  --canonical-url "https://igoodthings.qiaokiai.com/skills/leego-design-prd/site/" \
   --display-version "${RELEASE_DISPLAY_VERSION}" \
   --git-tag "${RELEASE_GIT_TAG}" \
   --release-type-zh "${RELEASE_TYPE_ZH}" \
@@ -331,11 +351,11 @@ REMOTE_BODY
 } > "${LOCAL_REMOTE_SCRIPT}"
 chmod +x "${LOCAL_REMOTE_SCRIPT}"
 
-echo "[digital-product-consultant-site] 上传并部署 ${RELEASE_NAME}..."
+echo "[leego-design-prd-site] 上传并部署 ${RELEASE_NAME}..."
 run_scp "${ARTIFACT}" "${REMOTE_ARTIFACT}"
 run_scp "${DEPLOY_DIR}/env/api.env.example" "${REMOTE_ENV_EXAMPLE}"
-run_scp "${DEPLOY_DIR}/systemd/digital-product-consultant-site.service" "${REMOTE_SERVICE_FILE}"
-run_scp "${DEPLOY_DIR}/nginx/digital-product-consultant-site.conf" "${REMOTE_NGINX_FILE}"
+run_scp "${DEPLOY_DIR}/systemd/leego-design-prd-site.service" "${REMOTE_SERVICE_FILE}"
+run_scp "${DEPLOY_DIR}/nginx/leego-design-prd-site.conf" "${REMOTE_NGINX_FILE}"
 run_scp "${LOCAL_REMOTE_SCRIPT}" "${REMOTE_SCRIPT_FILE}"
 run_ssh "bash ${REMOTE_SCRIPT_FILE}"
 
@@ -350,4 +370,4 @@ bash "${SCRIPT_DIR}/sync_git_release.sh" \
   --release-type-zh "${RELEASE_TYPE_ZH}" \
   --approval-file "${PO_GIT_RELEASE_APPROVAL_FILE:-${DEPLOY_DIR}/.git-release-approval.local.json}"
 
-echo "[digital-product-consultant-site] 发布完成: ${RELEASE_DISPLAY_VERSION}"
+echo "[leego-design-prd-site] 发布完成: ${RELEASE_DISPLAY_VERSION}"
