@@ -57,7 +57,7 @@ export default function Home() {
               <dl className="hero-meta" aria-label="能力档案状态">
                 <div>
                   <dt>公开身份</dt>
-                  <dd>Leego Design PRDVI</dd>
+                  <dd>Leego Design PRD</dd>
                 </div>
                 <div>
                   <dt>专业重点</dt>

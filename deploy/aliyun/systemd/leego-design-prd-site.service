@@ -1,5 +1,5 @@
 [Unit]
-Description=Leego Design PRDVI website
+Description=Leego Design PRD website
 After=network-online.target
 Wants=network-online.target
 

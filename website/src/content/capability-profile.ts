@@ -57,7 +57,7 @@ const learning = '持续学习中';
 
 export const capabilityProfile: CapabilityProfile = {
   identity: {
-    name: 'Leego Design PRDVI',
+    name: 'Leego Design PRD',
     positioning: '成长型 AI 产品经理',
     proposition:
       '持续理解企业业务，诊断连锁数字化与 AI 化问题，把需求、规则、权限、数据、异常和验收组织成 Codex 可以实施的产品基线。',
