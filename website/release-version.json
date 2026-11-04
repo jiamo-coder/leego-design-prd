@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "semver": "2.0.0",
-  "buildCount": 2,
-  "displayVersion": "2.0.0 (2)",
-  "lastReleaseTypeZh": "大改版",
-  "lastReleasedAt": "2026-08-31T23:53:56.970Z",
-  "lastGitTag": "v2.0.0-build.2"
+  "semver": "2.1.0",
+  "buildCount": 3,
+  "displayVersion": "2.1.0 (3)",
+  "lastReleaseTypeZh": null,
+  "lastReleasedAt": null,
+  "lastGitTag": null
 }

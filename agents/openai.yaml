@@ -1,4 +1,6 @@
 interface:
-  display_name: "Leego Design PRDVI"
+  icon_small: "./assets/skill-identity.png"
+  icon_large: "./assets/skill-identity.svg"
+  display_name: "Leego Design PRD"
   short_description: "持续学习企业业务，诊断连锁数字化与AI化并输出可实施PRD"
   default_prompt: "使用 $leego-design-prd 持续学习我的业务，诊断企业数字化或AI化需求并形成Codex可实施的PRD。"
