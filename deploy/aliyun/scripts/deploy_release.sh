@@ -336,7 +336,7 @@ node "${REMOTE_CURRENT_DIR}/deploy/aliyun/scripts/manage_service_release_registr
   --registry "${RELEASE_REGISTRY_PATH}" \
   --service-id leego-design-prd \
   --retire-service-id digital-product-consultant \
-  --name "Leego Design PRDVI" \
+  --name "Leego Design PRD" \
   --canonical-url "https://igoodthings.qiaokiai.com/skills/leego-design-prd/site/" \
   --display-version "${RELEASE_DISPLAY_VERSION}" \
   --git-tag "${RELEASE_GIT_TAG}" \

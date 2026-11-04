@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { siteUrl } from '../src/site-config';
 import './globals.css';
 
-const title = 'Leego Design PRDVI｜持续成长的 AI 产品经理';
+const title = 'Leego Design PRD｜持续成长的 AI 产品经理';
 const description =
   '持续学习企业业务，诊断连锁数字化与 AI 化需求，并输出可直接交给 Codex 实施的产品定义与 PRD。';
 
